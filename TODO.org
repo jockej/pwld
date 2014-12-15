@@ -1,0 +1,20 @@
+* pwld
+** write man page.
+** examples of real world usage.
+** write emacs package to have per buffer layout.
+** clean up the code a bit.
+** fix autotools scripts.
+** make arch linux package.
+ 
+
+
+
+
+
+
+
+
+
+
+
+
