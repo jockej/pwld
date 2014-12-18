@@ -200,7 +200,7 @@ static void setnext(void) {
   setgrp(newgrp);
 }
 
-/*
+/*!
  * Sets the active layout to the one
  * stored for \a actwin.
  */
@@ -333,6 +333,10 @@ static void main_loop() {
     // take care of any xevents which are not waiting on x_fd
     // but are queued in memory.
     if (XPending(dsp)) {
+      // XWindowEvent really should work, since we did XSelectInput
+      // with the root window as argument, but, well, things aren't
+      // always the way you want them to be, so we take all XEvents
+      // and throw away those which did not originat from root.
       // XWindowEvent(dsp, root, PropertyChangeMask, &ev);
       XNextEvent(dsp, &ev);
       handle_xevents(&ev);
