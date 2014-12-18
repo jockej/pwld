@@ -19,7 +19,9 @@
 #define INFILE      "/tmp/pwld.in"
 #define OUTFILE     "/tmp/pwld.out"
 #define PIDFILE     "/tmp/pwld.pid"
-#define MAX_GRP_LEN 4           // the max length of a group name
+
+#define MAX_GRP_LEN 4  // the max length of a group including ending newline
+#define MIN_GRP_LEN 3  // the min length of a group including ending newline
 
 using namespace std;
 
@@ -234,7 +236,7 @@ static void cl_change() {
   sort(list, list + n);
   auto it = wingrp->begin();
   unsigned long i = 0;
-  for (; i < n, it != wingrp->end(); i++, ++it) {
+  for (; i < n && it != wingrp->end(); i++, ++it) {
     if (it->first != list[i]) {
       it = wingrp->insert(it, make_pair(list[i], 0));
       ++it;
@@ -263,11 +265,12 @@ static void readnext() {
   char buf[MAX_GRP_LEN];
   int idx, n, infile;
   truncate(INFILE, MAX_GRP_LEN);
-  if ((infile = open(INFILE, O_RDONLY)) == -1) errlog("Couldn't open INFILE\n", false);
-  if ((n = read(infile, &buf, MAX_GRP_LEN)) < 3) return;
+  if ((infile = open(INFILE, O_RDONLY)) == -1)
+    errlog("Couldn't open INFILE\n", false);
+  if ((n = read(infile, &buf, MAX_GRP_LEN)) < MIN_GRP_LEN) return;
   close(infile);
   char* b;
-  for (b = buf; *b != '\n'; b++);
+  for (b = buf; b - buf < MAX_GRP_LEN && *b != '\n'; b++);
   *b = '\0';
   auto it = find_if(grpnames->begin(), grpnames->end(), isgroup(buf));
   if (it == grpnames->end()) return;
