@@ -1,0 +1,61 @@
+.TH PWLD 1
+.SH NAME
+pwld \- the per window layout daemon
+.SH SYNOPSIS
+.B pwld
+\fB\-n\fR \fILAYOUTS\fR
+[\fB\-d\fR]
+.SH DESCRIPTION
+pwld is a X daemon which keeps track of the keyboard layout on
+a per-window basis. It allows to change the layout for a window
+by sending a signal to the daemon.
+.SH OPTIONS
+.TP
+.BR \-l =\fILAYOUTS\fR
+A comma separated list of the available layouts, which have probably
+been set by
+.BR setxkbmap (1).
+.TP
+.BR \-d
+If present, will cause pwld to daemonize.
+.SH EXIT STATUS
+.B If sent SIGTERM, pwld will exit with status EXIT_SUCCESS, otherwise
+it will exit with status EXIT_FAILURE.
+.SH FILES
+.TP
+.BR /tmp/pwld.pid
+pwld will write its pid to this file. This can be used when sending
+signals to the daemon.
+.TP
+.BR /tmp/pwld.out
+This file will contain the name of the currently active layout.
+.TP
+.BR /tmp/pwld.in
+Write the name of a layout to this file and send SIGUSR2 to pwld to
+make that layout the active one for the currently active window.
+.SH BUGS
+This program has been tested only on Arch Linux with the i3 window
+manager. Yout mileage may vary.
+.SH EXAMPLE
+.TP
+To set layouts and start pwld, use something like the following sequence:
+.sp 1
+setxkbmap -layout "us,se" && pwld -l us,se -d
+.sp
+.TP
+To set the next layout in the active window, send SIGUSR1 to pwld:
+.sp 1
+kill -s SIGUSR1 `cat /tmp/pwld.pid`
+.sp
+.TP
+To set layout "se" as the layout in the active window, write se to /tmp/pwld.in and send SIGUSR2 to pwld:
+.sp 1
+echo se > /tmp/pwld.in && kill -s SIGUSR2 `cat /tmp/pwld.pid`
+.sp
+.SH SEE ALSO
+.BR setxkbmap (1)
+.SH AUTHOR
+This man page was written by Joakim Jalap (joakim.jalap@gmail.com).
+
+
+
