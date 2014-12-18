@@ -1,3 +1,21 @@
+/*
+    pwld, the per window layout daemon
+    Copyright (C) 2014 Joakim Jalap
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #define _XOPEN_SOURCE
 
 #include <cstdio>
@@ -95,11 +113,11 @@ static void parse_cmdl(int argc, char **argv) {
   if (grpnames) return;
  fail:
   fprintf(stderr, "Usage: %s -l layouts [-d]\n", argv[0]);
-  exit(EXIT_FAILURE);  
+  exit(EXIT_FAILURE);
 }
 
 /*!
- * Sets the current layout to \a grp, and 
+ * Sets the current layout to \a grp, and
  * writes its name to OUTFILE.
  */
 static void setgrp(int grp) {
@@ -145,13 +163,13 @@ static void init() {
   XSelectInput(dsp, root, PropertyChangeMask);
   aw = XInternAtom(dsp, "_NET_ACTIVE_WINDOW", True);
   cl = XInternAtom(dsp, "_NET_CLIENT_LIST", True);
-  x_fd = ConnectionNumber(dsp);  
+  x_fd = ConnectionNumber(dsp);
 
-  wingrp = new map<Window, int>();  
-  
+  wingrp = new map<Window, int>();
+
   // file descriptors
   pipe(sig_fds);
-  
+
   // signals
   sigset_t ss;
   sigemptyset(&ss);
@@ -162,11 +180,11 @@ static void init() {
   sa.sa_flags = 0;
   sigaction(SIGUSR1, &sa, NULL);
   sigaction(SIGTERM, &sa, NULL);
-  sigaction(SIGUSR2, &sa, NULL);  
+  sigaction(SIGUSR2, &sa, NULL);
 
   // logging
   openlog("pwld", logmask, LOG_USER);
-  
+
   atexit(clean);
 
   pfh = pidfile_open(PIDFILE, 0600, NULL);
@@ -350,5 +368,3 @@ int main(int argc, char *argv[]) {
   main_loop();
   return 0;
 }
-
-
