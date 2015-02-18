@@ -33,6 +33,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include "../config.h"
 
 #define INFILE      "/tmp/pwld.in"
 #define OUTFILE     "/tmp/pwld.out"
@@ -94,13 +95,21 @@ static bool parse_layout(char *layouts) {
   return (ngrp = grpnames->size()) > 1;
 }
 
+static void print_version() {
+  printf("The Per Window Layout Daemon, version " VERSION ".\n"\
+         "Please report any bugs to " PACKAGE_BUGREPORT ".\n");
+  exit(EXIT_SUCCESS);
+}
+
 /*!
  * Parse the command line options.
  */
 static void parse_cmdl(int argc, char **argv) {
   int opt;
-  while ((opt = getopt(argc, argv, "dl:")) != -1) {
+  while ((opt = getopt(argc, argv, "vdl:")) != -1) {
     switch(opt) {
+    case 'v':
+      print_version();
     case 'd':
       daemonize = true;
       break;
