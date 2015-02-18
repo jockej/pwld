@@ -1,11 +1,12 @@
 *** pwld
-**** write man page.
+**** DONE write man page.
 **** examples of real world usage.
 **** write emacs package to have per buffer layout.
 **** clean up the code a bit.
-**** fix autotools scripts.
+**** DONE fix autotools scripts.
 **** make arch linux package.
 **** maybe write some simple tests
+Actually, screw that
 
 
 
