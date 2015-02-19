@@ -1,13 +1,14 @@
 *** pwld
 **** DONE write man page.
-**** examples of real world usage.
-**** write emacs package to have per buffer layout.
+**** DONE examples of real world usage.
+**** TODO write emacs package to have per buffer layout.
 **** clean up the code a bit.
+Ah, bother.
 **** DONE fix autotools scripts.
-**** make arch linux package.
+**** DONE make arch linux package.
 **** maybe write some simple tests
-Actually, screw that
-
+Actually, screw that, it seems to work.
+**** TODO Make sure it kills any running instance on startup
 
 
 
