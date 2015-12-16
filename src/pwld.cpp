@@ -1,6 +1,6 @@
 /*
     pwld, the per window layout daemon
-    Copyright (C) 2014 Joakim Jalap
+    Copyright (C) 2014, 2015 Joakim Jalap
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,7 +16,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// I don't even remember what this was about...
+#ifdef __Linux__
 #define _XOPEN_SOURCE
+#endif
 
 #include <cstdio>
 #include <unistd.h>
@@ -27,12 +30,27 @@
 #include <string>
 #include <string.h>
 #include <X11/XKBlib.h>
-#include <bsd/libutil.h>
 #include <map>
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/select.h>
 #include <fcntl.h>
+
+#ifdef HAVE_FREEBSD_PIDFILE
+#ifdef __Linux__
+#include <bsd/libutil.h>
+#elif defined(__FreeBSD__)
+#include <util.h>
+#endif
+#else
+#include "pidfile.h"
+#endif
+
+#ifdef __OpenBSD__
+#include <errno.h>
+#endif
+
 #include "../config.h"
 
 #define INFILE      "/tmp/pwld.in"
@@ -55,11 +73,12 @@ Atom              cl;           // _NET_CLIENT_LIST atom
 Window            root;         // the root window
 int               thesig;       // memory for the signal caught
 bool              daemonize = false;
-struct pidfh     *pfh;
 FILE             *outfile;      // the current layout is in this file
 int logmask;
 int x_fd;                       // The X servers fd
 int sig_fds[2];                 // fds for the signal handler
+struct pidfh     *pfh;
+
 
 /*!
  * Logs \a msg to the syslog. If \a quit is true
@@ -195,7 +214,6 @@ static void init() {
   openlog("pwld", logmask, LOG_USER);
 
   atexit(clean);
-
   pfh = pidfile_open(PIDFILE, 0600, NULL);
   outfile = fopen(OUTFILE, "w+");
 }
