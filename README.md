@@ -1,7 +1,7 @@
-# pwld #
+# pwld
 ====
 
-## The Per Window Layout Daemon ##
+## The Per Window Layout Daemon
 
 `pwld` is a very simple X daemon which keeps track of the
 keyboard layout per window. It does this by listening to
@@ -17,7 +17,7 @@ the communication is done via files and signals instead of
 for example dbus.
 But it seems to work for my simple needs.
 
-### How it works ###
+### How it works
 
 `pwld` relies on keyboard layouts having been set already.
 A good way to do that is with `setxkbmap(1)`. For example:
@@ -56,7 +56,7 @@ for example Emacs.
 To make `pwld` exit cleanly and remove all its files,
 send a `SIGTERM`.
 
-## Example ##
+## Example
 
 In my `~/.xprofile` I have the following:
 
@@ -76,4 +76,48 @@ Lastly, in my `~/.conkyrc` I have this:
 ```
 ${execp cat /tmp/pwld.out}
 ```
+## Building
 
+This program uses the autotools, so the build/install procedure is pretty much
+the usual `./configure`, `make`, `make install`. Details follow.
+
+### Arch Linux
+
+On Arch Linux you can use the PKGBUILD file to make the package. If you don't
+know how, read all about it on the Arch Wiki.
+
+This program depends on the libbsd package, for the pidfile handling, so you
+need to have that installed. The PKGBUILD file mentioned above will take care of
+that for you.
+
+If you already have it installed the usual:
+
+```
+$./configure --prefix=/usr
+$make
+\#make install
+```
+
+will do.
+
+### OpenBSD
+
+On OpenBSD you need to configure the package like this in order to find the X
+libraries:
+
+```
+CPPFLAGS=-I/usr/X11R6/include LDFLAGS=-L/usr/X11R6/lib ./configure --prefix=/usr/local
+```
+
+Then it's just `make` and `make` install as usual.
+
+On OpenBSD `pwld` will use my own implementation of the pidfilef functions form
+FreeBSD, these are probably not very good, but they seem to work. (The reason
+for this is that OpenBSD instead provides the `pidfile(3)` function. This
+however puts the pidfile in `/var/run`, which is only writeable by root, so that
+means it can't be used in a user program, which kinda sucks.)
+
+### FreeBSD
+
+I haven't actually tried to build this on FreeBSD, so I can't in good conscience
+say it works. But I think it should work. YMMV.
