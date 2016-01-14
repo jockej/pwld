@@ -76,7 +76,7 @@ Lastly, in my `~/.conkyrc` I have this:
 ```
 ${execp cat /tmp/pwld.out}
 ```
-## Building
+## Building and installing
 
 This program uses the autotools, so the build/install procedure is pretty much
 the usual `./configure`, `make`, `make install`. Details follow.
